@@ -1,0 +1,29 @@
+services:
+  server:
+    image: ghcr.io/amperecomputingai/ampere-ai-llama-chat:server-0.0.1
+    environment:
+      MODEL_URL: ${MODEL_URL:-https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGUF/resolve/main/llama-2-7b-chat.Q4_K_M.gguf}
+      SERVER_PORT: ${SERVER_PORT:-8080}
+    command: ./start-server.sh
+    privileged: true
+    network_mode: host
+
+  api-app:
+    image: ghcr.io/amperecomputingai/ampere-ai-llama-chat:api-app-0.0.1
+    environment:
+      APP_PORT: ${APP_PORT:-8001}
+    command: ./start-api.sh
+    network_mode: host
+
+  db:
+    image: mongo:latest
+    command: mongod --port 27025
+    network_mode: host
+
+  client:
+    image: ghcr.io/amperecomputingai/ampere-ai-llama-chat:client-0.0.1
+    command: ./start-client.sh
+    network_mode: host
+    depends_on:
+      - server
+      - db
