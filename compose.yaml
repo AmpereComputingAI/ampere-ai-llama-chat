@@ -1,6 +1,10 @@
 services:
   server:
     image: ghcr.io/amperecomputingai/ampere-ai-llama-chat:server-0.0.1
+    build:
+      context: ./server
+      args:
+            REPO_URL: ${REPO_URL:-https://ampereaidevelopus.s3.amazonaws.com/releases/llama.aio/1.1.0/llama_aio_v1.1.0_f020792.tar.gz}
     environment:
       MODEL_URL: ${MODEL_URL:-https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGUF/resolve/main/llama-2-7b-chat.Q4_K_M.gguf}
       SERVER_PORT: ${SERVER_PORT:-8080}
@@ -10,6 +14,7 @@ services:
 
   api-app:
     image: ghcr.io/amperecomputingai/ampere-ai-llama-chat:api-app-0.0.1
+    build: ./api
     environment:
       APP_PORT: ${APP_PORT:-8001}
     command: ./start-api.sh
@@ -22,8 +27,13 @@ services:
 
   client:
     image: ghcr.io/amperecomputingai/ampere-ai-llama-chat:client-0.0.1
+    build:
+      context: ./client
+      args:
+            REPO_URL: ${REPO_URL:-https://github.com/huggingface/chat-ui.git}
     command: ./start-client.sh
     network_mode: host
     depends_on:
       - server
+      - api-app
       - db
