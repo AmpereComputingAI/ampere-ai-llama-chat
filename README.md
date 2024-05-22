@@ -37,7 +37,7 @@ dbb922f9b72c   ghcr.io/amperecomputingai/ollama-ampere:0.0.1   "bin/ollama serve
 
 Open the Chrome browser and type in the following URL.
 ```
-http://<server-IP>:3000
+http://<server-IP>:8080
 ```
 
 ## Use the application
