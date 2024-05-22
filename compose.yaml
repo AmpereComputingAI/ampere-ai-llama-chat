@@ -1,6 +1,6 @@
 services:
   ollama:
-    image: ghcr.io/amperecomputingai/ollama-ampere:0.0.1
+    image: ghcr.io/amperecomputingai/ollama-ampere:0.0.2
     container_name: ollama-server
     volumes:
       - ollama:/root/.ollama
@@ -19,6 +19,7 @@ services:
     environment:
       - 'OLLAMA_BASE_URL=http://127.0.0.1:11434'
       - 'WEBUI_NAME=Ampere Llama Chat'
+      #- 'GLOBAL_LOG_LEVEL=DEBUG'
     restart: unless-stopped
 
 volumes:
