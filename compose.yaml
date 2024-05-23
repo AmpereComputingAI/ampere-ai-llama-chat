@@ -9,12 +9,17 @@ services:
     restart: unless-stopped
 
   open-webui:
-    image: ghcr.io/open-webui/open-webui:0.1.124
+    #image: ghcr.io/open-webui/open-webui:0.1.124
+    build:
+      context: open-webui
+      dockerfile: ../Dockerfile.ampere
+      target: base0
+    image: open-webui:0.1.124-local
     container_name: open-webui
     volumes:
       - open-webui:/app/backend/data
-    depends_on:
-      - ollama
+    #depends_on:
+    #  - ollama
     network_mode: host
     environment:
       - 'OLLAMA_BASE_URL=http://127.0.0.1:11434'
