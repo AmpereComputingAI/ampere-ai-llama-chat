@@ -99,7 +99,7 @@ RUN pip3 install uv && \
     uv pip install --system -r requirements.txt --no-cache-dir && \
     uv pip install --system --no-build-isolation --upgrade git+https://github.com/AmpereComputingAI/transformers.git@ampere/v4.40 && \
     python -c "import os; from sentence_transformers import SentenceTransformer; SentenceTransformer(os.environ['RAG_EMBEDDING_MODEL'], device='cpu')" && \
-    python -c "import os; from faster_whisper import WhisperModel; WhisperModel(os.environ['WHISPER_MODEL'], device='cpu', compute_type='int8', download_root=os.environ['WHISPER_MODEL_DIR'])"; \
+    python -c "import os; from faster_whisper import WhisperModel; WhisperModel(os.environ['WHISPER_MODEL'], device='cpu', compute_type='int8', download_root=os.environ['WHISPER_MODEL_DIR'])"
 
 
 # copy embedding weight from build
@@ -115,6 +115,5 @@ COPY --from=build /app/package.json /app/package.json
 # copy backend files
 COPY ./backend .
 
-EXPOSE 8080
-
-CMD [ "bash", "start.sh"]
+FROM base2 as base3
+CMD ["start.sh"]

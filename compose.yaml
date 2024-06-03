@@ -5,26 +5,32 @@ services:
     volumes:
       - ollama:/root/.ollama
     network_mode: host
+    #ports:
+    #  - 11435:11434
     tty: true
     restart: unless-stopped
 
   open-webui:
-    #image: ghcr.io/open-webui/open-webui:0.1.124
     build:
       context: open-webui
       dockerfile: ../Dockerfile.ampere
-      target: base0
-    image: open-webui:0.1.124-local
+      target: base3
+    image: ghcr.io/amperecomputingai/ampere-ai-llama-chat:0.0.2
     container_name: open-webui
     volumes:
       - open-webui:/app/backend/data
-    #depends_on:
-    #  - ollama
+    depends_on:
+      - ollama
     network_mode: host
+    #ports:
+    #  - 8080:8080
     environment:
+      - 'PORT=8080'
       - 'OLLAMA_BASE_URL=http://127.0.0.1:11434'
       - 'WEBUI_NAME=Ampere Llama Chat'
-      #- 'GLOBAL_LOG_LEVEL=DEBUG'
+      - 'ENABLE_LITELLM=False'
+      - 'WEBUI_AUTH=False'
+      - 'GLOBAL_LOG_LEVEL=DEBUG'
     restart: unless-stopped
 
 volumes:
