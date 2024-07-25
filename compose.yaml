@@ -1,15 +1,18 @@
 services:
   ollama:
-    image: ghcr.io/amperecomputingai/ollama-ampere:0.0.2
-    container_name: ollama-server
+    image: ghcr.io/amperecomputingai/ollama-ampere:0.0.4-ub22
+    #image: ghcr.io/amperecomputingai/ollama-ampere:0.0.4-ol9
+    container_name: ollama-server-1
     volumes:
       - ollama:/root/.ollama
     network_mode: host
+    environment:
+      - "OLLAMA_HOST=0.0.0.0:11434"
     tty: true
     restart: unless-stopped
 
   open-webui:
-    image: ghcr.io/open-webui/open-webui:0.1.124
+    image: ghcr.io/open-webui/open-webui:0.3.10
     container_name: open-webui
     volumes:
       - open-webui:/app/backend/data
@@ -20,6 +23,8 @@ services:
       - 'OLLAMA_BASE_URL=http://127.0.0.1:11434'
       - 'WEBUI_NAME=Ampere Llama Chat'
       #- 'GLOBAL_LOG_LEVEL=DEBUG'
+      - 'PORT=8080'
+      - 'WEBUI_AUTH=False'
     restart: unless-stopped
 
 volumes:
