@@ -1,27 +1,21 @@
 diff --git a/backend/apps/rag/main.py b/backend/apps/rag/main.py
-index 2e2a8e20..36c589de 100644
+index 8631846e..2be96b6f 100644
 --- a/backend/apps/rag/main.py
 +++ b/backend/apps/rag/main.py
-@@ -8,7 +8,7 @@ from fastapi import (
-     Form,
- )
- from fastapi.middleware.cors import CORSMiddleware
--import os, shutil, logging, re
-+import os, torch, shutil, logging, re
- 
- from pathlib import Path
- from typing import List
-@@ -134,11 +134,12 @@ def update_embedding_model(
+@@ -193,13 +193,14 @@ def update_embedding_model(
      update_model: bool = False,
  ):
-     if embedding_model and app.state.RAG_EMBEDDING_ENGINE == "":
+     if embedding_model and app.state.config.RAG_EMBEDDING_ENGINE == "":
+-        import sentence_transformers
++        import sentence_transformers, torch
+ 
 -        app.state.sentence_transformer_ef = sentence_transformers.SentenceTransformer(
-+        sentence_transformer_ef = sentence_transformers.SentenceTransformer(
++        model = sentence_transformers.SentenceTransformer(
              get_model_path(embedding_model, update_model),
              device=DEVICE_TYPE,
              trust_remote_code=RAG_EMBEDDING_MODEL_TRUST_REMOTE_CODE,
          )
-+        app.state.sentence_transformer_ef = torch.compile(sentence_transformer_ef)
++        app.state.sentence_transformer_ef = torch.compile(model)
      else:
          app.state.sentence_transformer_ef = None
  
