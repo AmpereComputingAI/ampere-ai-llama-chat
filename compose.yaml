@@ -16,7 +16,7 @@ services:
       dockerfile: ../Dockerfile
       args:
         - "BASE_IMAGE=ghcr.io/amperecomputingai/release-aio-pytorch:1.11.1"
-    image: ghcr.io/amperecomputingai/ampere-ai-llama-chat:0.0.3-rc
+    image: ghcr.io/amperecomputingai/ampere-ai-llama-chat:0.0.4-rc
     container_name: open-webui
     volumes:
       - open-webui:/app/backend/data
