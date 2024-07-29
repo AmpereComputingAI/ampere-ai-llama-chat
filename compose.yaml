@@ -1,12 +1,12 @@
 services:
   ollama:
-    image: ghcr.io/amperecomputingai/ollama-ampere:0.0.2
+    image: ghcr.io/amperecomputingai/ollama-ampere:0.0.4-ub22
     container_name: ollama-server
     volumes:
       - ollama:/root/.ollama
     network_mode: host
-    #ports:
-    #  - 11435:11434
+    environment:
+      - "OLLAMA_HOST=0.0.0.0:11434"
     tty: true
     restart: unless-stopped
 
@@ -14,16 +14,15 @@ services:
     build:
       context: open-webui
       dockerfile: ../Dockerfile
-      target: base3
-    image: ghcr.io/amperecomputingai/ampere-ai-llama-chat:0.0.2
+      args:
+        - "BASE_IMAGE=ghcr.io/amperecomputingai/release-aio-pytorch:1.11.1"
+    image: ghcr.io/amperecomputingai/ampere-ai-llama-chat:0.0.3
     container_name: open-webui
     volumes:
       - open-webui:/app/backend/data
     depends_on:
       - ollama
     network_mode: host
-    #ports:
-    #  - 8080:8080
     environment:
       - 'PORT=8080'
       - 'OLLAMA_BASE_URL=http://127.0.0.1:11434'
