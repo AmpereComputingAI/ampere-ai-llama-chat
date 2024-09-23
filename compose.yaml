@@ -1,7 +1,6 @@
 services:
   ollama:
-    image: ghcr.io/amperecomputingai/ollama-ampere:0.0.5-ol9
-    #image: ollama/ollama:0.3.1
+    image: ghcr.io/amperecomputingai/ollama-ampere:0.0.6-ol9
     container_name: ollama-server
     volumes:
       - ollama:/root/.ollama
