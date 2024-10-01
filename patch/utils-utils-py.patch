@@ -1,0 +1,21 @@
+diff --git a/backend/open_webui/utils/utils.py b/backend/open_webui/utils/utils.py
+index 45a7eef3..ea0210aa 100644
+--- a/backend/open_webui/utils/utils.py
++++ b/backend/open_webui/utils/utils.py
+@@ -1,6 +1,6 @@
+ import logging
+ import uuid
+-from datetime import UTC, datetime, timedelta
++from datetime import timezone, datetime, timedelta
+ from typing import Optional, Union
+ 
+ import jwt
+@@ -39,7 +39,7 @@ def create_token(data: dict, expires_delta: Union[timedelta, None] = None) -> st
+     payload = data.copy()
+ 
+     if expires_delta:
+-        expire = datetime.now(UTC) + expires_delta
++        expire = datetime.now(timezone.utc) + expires_delta
+         payload.update({"exp": expire})
+ 
+     encoded_jwt = jwt.encode(payload, SESSION_SECRET, algorithm=ALGORITHM)

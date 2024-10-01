@@ -16,7 +16,7 @@ services:
       dockerfile: ../Dockerfile
       args:
         - "BASE_IMAGE=ghcr.io/amperecomputingai/release-aio-pytorch:1.11.1"
-    image: ghcr.io/amperecomputingai/ampere-ai-llama-chat:0.0.5
+    image: ghcr.io/amperecomputingai/ampere-ai-llama-chat:0.0.6
     container_name: open-webui
     volumes:
       - open-webui:/app/backend/data
@@ -25,11 +25,11 @@ services:
     network_mode: host
     environment:
       - 'PORT=8080'
-      - 'OLLAMA_BASE_URL=http://127.0.0.1:11434'
+      - 'VECTOR_DB=milvus'
+      - 'OLLAMA_BASE_URL=http://0.0.0.0:11434'
       - 'WEBUI_NAME=Ampere Llama Chat'
       - 'ENABLE_LITELLM=False'
       - 'WEBUI_AUTH=False'
-      - 'GLOBAL_LOG_LEVEL=DEBUG'
     restart: unless-stopped
 
 volumes:

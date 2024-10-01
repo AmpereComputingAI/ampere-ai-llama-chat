@@ -1,9 +1,9 @@
-diff --git a/backend/apps/rag/main.py b/backend/apps/rag/main.py
-index 8631846e..2be96b6f 100644
---- a/backend/apps/rag/main.py
-+++ b/backend/apps/rag/main.py
-@@ -193,13 +193,14 @@ def update_embedding_model(
-     update_model: bool = False,
+diff --git a/backend/open_webui/apps/rag/main.py b/backend/open_webui/apps/rag/main.py
+index 74855b33..7641c160 100644
+--- a/backend/open_webui/apps/rag/main.py
++++ b/backend/open_webui/apps/rag/main.py
+@@ -183,13 +183,14 @@ def update_embedding_model(
+     auto_update: bool = False,
  ):
      if embedding_model and app.state.config.RAG_EMBEDDING_ENGINE == "":
 -        import sentence_transformers
@@ -11,7 +11,7 @@ index 8631846e..2be96b6f 100644
  
 -        app.state.sentence_transformer_ef = sentence_transformers.SentenceTransformer(
 +        model = sentence_transformers.SentenceTransformer(
-             get_model_path(embedding_model, update_model),
+             get_model_path(embedding_model, auto_update),
              device=DEVICE_TYPE,
              trust_remote_code=RAG_EMBEDDING_MODEL_TRUST_REMOTE_CODE,
          )
