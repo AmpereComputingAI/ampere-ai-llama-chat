@@ -1,0 +1,13 @@
+diff --git a/backend/requirements.txt b/backend/requirements.txt
+index 79e898c6a..e00977668 100644
+--- a/backend/requirements.txt
++++ b/backend/requirements.txt
+@@ -48,7 +48,7 @@ pymilvus==2.5.0
+ qdrant-client~=1.12.0
+ opensearch-py==2.7.1
+ 
+-sentence-transformers==3.3.1
++sentence-transformers==3.1.1
+ colbert-ai==0.2.21
+ einops==0.8.0
+ 

@@ -1,16 +1,17 @@
 diff --git a/backend/open_webui/utils/utils.py b/backend/open_webui/utils/utils.py
-index 45a7eef3..ea0210aa 100644
+index cde953102..289856e98 100644
 --- a/backend/open_webui/utils/utils.py
 +++ b/backend/open_webui/utils/utils.py
-@@ -1,6 +1,6 @@
- import logging
+@@ -2,7 +2,7 @@ import logging
  import uuid
+ import jwt
+ 
 -from datetime import UTC, datetime, timedelta
 +from datetime import timezone, datetime, timedelta
- from typing import Optional, Union
+ from typing import Optional, Union, List, Dict
  
- import jwt
-@@ -39,7 +39,7 @@ def create_token(data: dict, expires_delta: Union[timedelta, None] = None) -> st
+ from open_webui.apps.webui.models.users import Users
+@@ -42,7 +42,7 @@ def create_token(data: dict, expires_delta: Union[timedelta, None] = None) -> st
      payload = data.copy()
  
      if expires_delta:

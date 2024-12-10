@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 ARG BASE_IMAGE
 # Initialize device type args
-# use build args in the docker build commmand with --build-arg="BUILDARG=true"
+# use build args in the docker build command with --build-arg="BUILDARG=true"
 ARG USE_CUDA=false
 ARG USE_OLLAMA=false
 # Tested with cu117 for CUDA 11 and cu121 for CUDA 12 (default)
@@ -12,12 +12,17 @@ ARG USE_CUDA_VER=cu121
 # IMPORTANT: If you change the embedding model (sentence-transformers/all-MiniLM-L6-v2) and vice versa, you aren't able to use RAG Chat with your previous documents loaded in the WebUI! You need to re-embed them.
 ARG USE_EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L6-v2
 ARG USE_RERANKING_MODEL=""
+
+# Tiktoken encoding name; models to use can be found at https://huggingface.co/models?library=tiktoken
+ARG USE_TIKTOKEN_ENCODING_NAME="cl100k_base"
+
 ARG BUILD_HASH=dev-build
 # Override at your own risk - non-root configurations are untested
 ARG UID=0
 ARG GID=0
 
 ######## WebUI frontend ########
+#FROM --platform=$BUILDPLATFORM node:22-alpine3.20 AS build
 FROM --platform=$BUILDPLATFORM node:21-alpine3.19 AS build
 ARG BUILD_HASH
 
@@ -73,13 +78,21 @@ ENV RAG_EMBEDDING_MODEL="$USE_EMBEDDING_MODEL_DOCKER" \
     RAG_RERANKING_MODEL="$USE_RERANKING_MODEL_DOCKER" \
     SENTENCE_TRANSFORMERS_HOME="/app/backend/data/cache/embedding/models"
 
+## Tiktoken model settings ##
+ENV TIKTOKEN_ENCODING_NAME="cl100k_base" \
+    TIKTOKEN_CACHE_DIR="/app/backend/data/cache/tiktoken"
+
 ## Hugging Face download cache ##
 ENV HF_HOME="/app/backend/data/cache/embedding/models"
+
+## Torch Extensions ##
+# ENV TORCH_EXTENSIONS_DIR="/.cache/torch_extensions"
+
 #### Other models ##########################################################
 
 WORKDIR /app/backend
 
-ENV HOME /root
+ENV HOME=/root
 # Create user and group if not root
 RUN if [ $UID -ne 0 ]; then \
     if [ $GID -ne 0 ]; then \
@@ -95,11 +108,10 @@ RUN echo -n 00000000-0000-0000-0000-000000000000 > $HOME/.cache/chroma/telemetry
 RUN chown -R $UID:$GID /app $HOME
 
 FROM base0 AS base1
-
 RUN if [ "$USE_OLLAMA" = "true" ]; then \
     apt-get update && \
     # Install pandoc and netcat
-    apt-get install -y --no-install-recommends pandoc netcat-openbsd curl && \
+    apt-get install -y --no-install-recommends git build-essential pandoc netcat-openbsd curl && \
     apt-get install -y --no-install-recommends gcc python3-dev && \
     # for RAG OCR
     apt-get install -y --no-install-recommends ffmpeg libsm6 libxext6 && \
@@ -112,9 +124,8 @@ RUN if [ "$USE_OLLAMA" = "true" ]; then \
     else \
     apt-get update -y && \
     # Install pandoc, netcat and gcc
-    #apt-get install -y --no-install-recommends pandoc gcc netcat-openbsd curl jq && \
-    #apt-get install -y --no-install-recommends gcc python3-dev && \
-    apt-get install -y --no-install-recommends pandoc curl jq && \
+    apt-get install -y --no-install-recommends git build-essential pandoc gcc netcat-openbsd curl jq && \
+    apt-get install -y --no-install-recommends gcc python3-dev && \
     # for RAG OCR
     apt-get install -y --no-install-recommends ffmpeg libsm6 libxext6 && \
     # cleanup
@@ -125,7 +136,6 @@ RUN if [ "$USE_OLLAMA" = "true" ]; then \
 COPY --chown=$UID:$GID ./backend/requirements.txt ./requirements.txt
 
 FROM base1 AS base2
-
 RUN pip3 install uv && \
     if [ "$USE_CUDA" = "true" ]; then \
     # If you use CUDA the whisper and embedding model will be downloaded on first use
@@ -133,14 +143,17 @@ RUN pip3 install uv && \
     uv pip install --system -r requirements.txt --no-cache-dir && \
     python -c "import os; from sentence_transformers import SentenceTransformer; SentenceTransformer(os.environ['RAG_EMBEDDING_MODEL'], device='cpu')" && \
     python -c "import os; from faster_whisper import WhisperModel; WhisperModel(os.environ['WHISPER_MODEL'], device='cpu', compute_type='int8', download_root=os.environ['WHISPER_MODEL_DIR'])"; \
+    python -c "import os; import tiktoken; tiktoken.get_encoding(os.environ['TIKTOKEN_ENCODING_NAME'])"; \
     else \
     uv pip install --system git+https://github.com/amperecomputingai/transformers@ampere/v4.40 --no-cache-dir && \
     uv pip install --system --no-deps "torchaudio==2.2" --no-cache-dir && \
     uv pip install --system -r requirements.txt --no-cache-dir && \
     python -c "import os; from sentence_transformers import SentenceTransformer; SentenceTransformer(os.environ['RAG_EMBEDDING_MODEL'], device='cpu')" && \
     python -c "import os; from faster_whisper import WhisperModel; WhisperModel(os.environ['WHISPER_MODEL'], device='cpu', compute_type='int8', download_root=os.environ['WHISPER_MODEL_DIR'])"; \
+    python -c "import os; import tiktoken; tiktoken.get_encoding(os.environ['TIKTOKEN_ENCODING_NAME'])"; \
     fi; \
     chown -R $UID:$GID /app/backend/data/
+
 
 FROM base2 AS base3
 
@@ -158,13 +171,14 @@ COPY --chown=$UID:$GID ./backend .
 
 EXPOSE 8080
 
-HEALTHCHECK CMD curl --silent --fail http://localhost:8080/health | jq -e '.status == true' || exit 1
+HEALTHCHECK CMD curl --silent --fail http://localhost:${PORT:-8080}/health | jq -ne 'input.status == true' || exit 1
 
 USER $UID:$GID
 
 ARG BUILD_HASH
 ENV WEBUI_BUILD_VERSION=${BUILD_HASH}
+ENV DOCKER=true
 
 FROM base3 AS base4
 
-ENTRYPOINT [ "bash", "start.sh" ]
+ENTRYPOINT [ "bash", "start.sh"]

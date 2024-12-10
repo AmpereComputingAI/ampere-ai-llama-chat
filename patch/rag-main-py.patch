@@ -1,21 +1,22 @@
-diff --git a/backend/open_webui/apps/rag/main.py b/backend/open_webui/apps/rag/main.py
-index 74855b33..7641c160 100644
---- a/backend/open_webui/apps/rag/main.py
-+++ b/backend/open_webui/apps/rag/main.py
-@@ -183,13 +183,14 @@ def update_embedding_model(
+diff --git a/backend/open_webui/apps/retrieval/main.py b/backend/open_webui/apps/retrieval/main.py
+index 7ad4af064..9c259a755 100644
+--- a/backend/open_webui/apps/retrieval/main.py
++++ b/backend/open_webui/apps/retrieval/main.py
+@@ -205,14 +205,16 @@ def update_embedding_model(
      auto_update: bool = False,
  ):
      if embedding_model and app.state.config.RAG_EMBEDDING_ENGINE == "":
--        import sentence_transformers
-+        import sentence_transformers, torch
++        import torch
+         from sentence_transformers import SentenceTransformer
  
--        app.state.sentence_transformer_ef = sentence_transformers.SentenceTransformer(
-+        model = sentence_transformers.SentenceTransformer(
-             get_model_path(embedding_model, auto_update),
-             device=DEVICE_TYPE,
-             trust_remote_code=RAG_EMBEDDING_MODEL_TRUST_REMOTE_CODE,
-         )
-+        app.state.sentence_transformer_ef = torch.compile(model)
-     else:
-         app.state.sentence_transformer_ef = None
- 
+         try:
+-            app.state.sentence_transformer_ef = SentenceTransformer(
++            model = SentenceTransformer(
+                 get_model_path(embedding_model, auto_update),
+                 device=DEVICE_TYPE,
+                 trust_remote_code=RAG_EMBEDDING_MODEL_TRUST_REMOTE_CODE,
+             )
++            app.state.sentence_transformer_ef = torch.compile(model)
+         except Exception as e:
+             log.debug(f"Error loading SentenceTransformer: {e}")
+             app.state.sentence_transformer_ef = None
