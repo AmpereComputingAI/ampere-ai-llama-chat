@@ -1,12 +1,12 @@
 diff --git a/backend/open_webui/apps/retrieval/main.py b/backend/open_webui/apps/retrieval/main.py
-index 7ad4af064..9c259a755 100644
+index 7ad4af064..942eec82a 100644
 --- a/backend/open_webui/apps/retrieval/main.py
 +++ b/backend/open_webui/apps/retrieval/main.py
-@@ -205,14 +205,16 @@ def update_embedding_model(
+@@ -205,14 +205,18 @@ def update_embedding_model(
      auto_update: bool = False,
  ):
      if embedding_model and app.state.config.RAG_EMBEDDING_ENGINE == "":
-+        import torch
++        import torch, types
          from sentence_transformers import SentenceTransformer
  
          try:
@@ -16,7 +16,9 @@ index 7ad4af064..9c259a755 100644
                  device=DEVICE_TYPE,
                  trust_remote_code=RAG_EMBEDDING_MODEL_TRUST_REMOTE_CODE,
              )
-+            app.state.sentence_transformer_ef = torch.compile(model)
++            backend = "aio"
++            options = {"modelname": model.__self__._get_name() if isinstance(model, types.MethodType) else model._get_name()}
++            app.state.sentence_transformer_ef = torch.compile(model, backend=backend, options=options)
          except Exception as e:
              log.debug(f"Error loading SentenceTransformer: {e}")
              app.state.sentence_transformer_ef = None
