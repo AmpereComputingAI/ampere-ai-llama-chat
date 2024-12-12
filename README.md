@@ -23,16 +23,16 @@ Run the following script to start the demo
 
 ```shell
 $ ./start-app.sh
-[+] Running 2/2
- ✔ Container ollama-server  Started                  0.3s 
- ✔ Container open-webui     Started                  0.4s
+ [+] Running 2/2
+ ✔ Container ollama-server  Started                  0.2s 
+ ✔ Container open-webui     Started                  0.2s
 ```
 
 ```docker
 $ docker ps
-CONTAINER ID   IMAGE                                           COMMAND              CREATED         STATUS              PORTS     NAMES
-19e4d8f91988   ghcr.io/open-webui/open-webui:0.1.124           "bash start.sh"      2 minutes ago   Up About a minute             open-webui
-dbb922f9b72c   ghcr.io/amperecomputingai/ollama-ampere:0.0.1   "bin/ollama serve"   2 minutes ago   Up About a minute             ollama-server
+CONTAINER ID   IMAGE                                               COMMAND              CREATED         STATUS                            PORTS     NAMES
+c4c292349d2a   ghcr.io/open-webui/open-webui:v0.4.7                "bash start.sh"      6 seconds ago   Up 5 seconds (health: starting)             open-webui
+54515ff4ab15   ghcr.io/amperecomputingai/ollama-ampere:0.0.6-ol9   "bin/ollama serve"   6 seconds ago   Up 5 seconds                                ollama-server
 ```
 
 Open the Chrome browser and type in the following URL.
