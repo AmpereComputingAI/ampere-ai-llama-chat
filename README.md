@@ -41,10 +41,13 @@ Open the Chrome browser and type in the following URL.
 http://<server-IP>:8080
 ```
 
-## Use the application
-Please follow this [documentation](https://docs.openwebui.com) on how to use the application  
+## Use the application using UI
+Follow this [documentation](https://docs.openwebui.com) on how to use the application
 
-![Open WebUI](https://docs.openwebui.com/assets/images/demo-6793d95448aa180bca8dafbd21aa91b5.gif)
+![Open WebUI](https://github.com/open-webui/open-webui/blob/4269df041fef62208d59babe0faae866d2bfbc3c/demo.gif)
+
+## Use the application using APIs/command line
+Follow this [documentation](api-endpoints.MD) on how to use the application
 
 
 ## Stop the demo
