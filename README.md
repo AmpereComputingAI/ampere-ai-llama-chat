@@ -4,7 +4,7 @@
 ```shell
 $ git clone https://github.com/AmpereComputingAI/ampere-ai-llama-chat.git
 $ cd ampere-ai-llama-chat
-$ git checkout 0.0.8 -b 0.0.8
+$ git checkout 0.0.9 -b 0.0.9
 ```
 
 ## Install docker and compose
@@ -47,7 +47,7 @@ Follow this [documentation](https://docs.openwebui.com) on how to use the applic
 ![Open WebUI](https://github.com/open-webui/open-webui/blob/4269df041fef62208d59babe0faae866d2bfbc3c/demo.gif)
 
 ## Use the application using APIs/command line
-Follow this [documentation](api-endpoints.MD) on how to use the application
+Follow this [documentation](api-endpoints.md) on how to use the application
 
 
 ## Stop the demo
