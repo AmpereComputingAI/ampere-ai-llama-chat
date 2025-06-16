@@ -4,7 +4,7 @@
 ```shell
 $ git clone https://github.com/AmpereComputingAI/ampere-ai-llama-chat.git
 $ cd ampere-ai-llama-chat
-$ git checkout 0.0.10 -b 0.0.10
+$ git checkout 0.0.11 -b 0.0.11
 ```
 
 ## Install docker and compose
