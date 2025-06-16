@@ -1,6 +1,6 @@
 services:
   ollama:
-    image: ghcr.io/amperecomputingai/ollama-ampere:0.0.6-ol9
+    image: ghcr.io/amperecomputingai/ollama-ampere:0.0.8-ol9
     container_name: ollama-server
     volumes:
       - ollama:/root/.ollama
@@ -17,7 +17,7 @@ services:
       dockerfile: ../Dockerfile
       args:
         BASE_IMAGE: 'amperecomputingai/pytorch:1.11.1'
-    image: ghcr.io/open-webui/open-webui:v0.5.4
+    image: ghcr.io/open-webui/open-webui:v0.5.20
     container_name: open-webui
     volumes:
       - open-webui:/app/backend/data
