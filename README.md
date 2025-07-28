@@ -31,9 +31,9 @@ $ ./start-app.sh
 
 ```docker
 $ docker ps
-CONTAINER ID   IMAGE                                               COMMAND              CREATED         STATUS                            PORTS     NAMES
-c4c292349d2a   ghcr.io/open-webui/open-webui:v0.4.7                "bash start.sh"      6 seconds ago   Up 5 seconds (health: starting)             open-webui
-54515ff4ab15   ghcr.io/amperecomputingai/ollama-ampere:0.0.6-ol9   "bin/ollama serve"   6 seconds ago   Up 5 seconds                                ollama-server
+CONTAINER ID   IMAGE                                               COMMAND               CREATED             STATUS                    PORTS     NAMES
+5d905f417224   ghcr.io/open-webui/open-webui:v0.5.20               "bash start.sh"       38 seconds ago      Up 37 seconds (healthy)             open-webui
+2bcd436d9637   ghcr.io/amperecomputingai/ollama-ampere:1.0.0-ol9   "/bin/ollama serve"   38 seconds ago      Up 37 seconds                       ollama-server
 ```
 
 Open the Chrome browser and type in the following URL.
